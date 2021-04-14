@@ -1,0 +1,25 @@
+{
+  "name": "PROJ3_WePutBirdsOnThings_BE",
+  "version": "1.0.0",
+  "description": "Birdwatching app back end",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keyofbpoe1/PROJ3_WePutBirdsOnThings_BE.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/keyofbpoe1/PROJ3_WePutBirdsOnThings_BE/issues"
+  },
+  "homepage": "https://github.com/keyofbpoe1/PROJ3_WePutBirdsOnThings_BE#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.12.3"
+  }
+}
