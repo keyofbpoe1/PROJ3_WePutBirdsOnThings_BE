@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(session({
     secret: process.env.SECRET,
     resave: false, // default more info: https://www.npmjs.com/package/express-session#resave
-    saveUninitialized: false // default  more info: https://www.npmjs.com/package/express-session#resave
+    saveUninitialized: false, // default  more info: https://www.npmjs.com/package/express-session#resave
 }));
 
 //database setup
@@ -53,8 +53,6 @@ app.use(cors(corsOptions));
 app.get('/', (req, res) => {
   res.send('Connected');
 });
-
-//controllers
 
 //controllers
 const usersController = require('./controllers/usersController');

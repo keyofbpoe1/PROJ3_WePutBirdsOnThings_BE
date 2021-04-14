@@ -30,7 +30,7 @@ sessions.post('/', (req, res) => {
       }
     }
   });
-})
+});
 
 //logout DELETE/destroy Route
 sessions.delete('/', (req, res) => {
