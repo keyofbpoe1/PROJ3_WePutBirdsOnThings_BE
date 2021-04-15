@@ -50,7 +50,7 @@ users.put('/:id/pin', (req, res) => {
       });
     }
     else {
-      //if dulicate, error 
+      //if dulicate, error
       res.status(400).json({ error: "duplicate bird" });
     }
   });
@@ -61,7 +61,7 @@ users.put('/:id/journal', (req, res) => {
   console.log(req.body);
   let d = new Date();
   let n = d.toISOString();
-  let jUpd = { $push: { journal: {"notes": req.body.notes, "datestamp": n } } };
+  let jUpd = { $push: { journal: {"title": req.body.title, "notes": req.body.notes, "datestamp": n } } };
   UsersModel.findByIdAndUpdate(req.params.id, jUpd, { new: true }, (err, updatedUser) => {
     if (err) {
       res.status(400).json({ error: err.message });
