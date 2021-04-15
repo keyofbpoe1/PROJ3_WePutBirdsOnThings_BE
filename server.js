@@ -47,7 +47,7 @@ const corsOptions = {
 }
 
 //setup cors
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
 
 // HOMEPAGE message
 app.get('/', (req, res) => {
