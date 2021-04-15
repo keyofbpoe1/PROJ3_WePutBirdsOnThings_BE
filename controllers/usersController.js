@@ -35,10 +35,10 @@ users.put('/:id/pin', (req, res) => {
     //res.status(200).json(foundUser.birdlist.find(bird => { bird.birdname === req.body.birdname }));
     //res.status(200).
     //check if user has already pinned bird
-    let restest =  (foundUser.birdlist.find(obj => {
+    let resBird =  (foundUser.birdlist.find(obj => {
       return obj.birdname === req.body.birdname;
     }));
-    if (!restest) {
+    if (!resBird) {
       //if not duplicate, pin it!
       console.log('pinning bird');
       let pinUpd = { $push: { birdlist: {"birdname": req.body.birdname, "seen": false } } };
@@ -59,15 +59,55 @@ users.put('/:id/pin', (req, res) => {
 //journal put route
 users.put('/:id/journal', (req, res) => {
   console.log(req.body);
-  let d = new Date();
-  let n = d.toISOString();
-  let jUpd = { $push: { journal: {"title": req.body.title, "notes": req.body.notes, "datestamp": n } } };
-  UsersModel.findByIdAndUpdate(req.params.id, jUpd, { new: true }, (err, updatedUser) => {
-    if (err) {
-      res.status(400).json({ error: err.message });
-    }
-    res.status(200).json(updatedUser);
-  });
+  let jUpd = {};
+
+  //if updating journal item
+  if (req.body.datestamp) {
+    //find journal entry in user
+    let jCopy;
+    let jInd;
+    UsersModel.findById(req.params.id, (err, foundUser, next) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+      }
+      jCopy = foundUser.journal;
+      jInd = jCopy.findIndex(obj => {
+        return obj.datestamp === req.body.datestamp;
+      });
+      jCopy[jInd].title = req.body.title;
+      jCopy[jInd].notes = req.body.notes;
+      jUpd = { $set: { journal: jCopy } };
+      UsersModel.findByIdAndUpdate(req.params.id, jUpd, { new: true }, (err, updatedUser) => {
+        if (err) {
+          res.status(400).json({ error: err.message });
+        }
+        res.status(200).json(updatedUser);
+      });
+    });
+
+    //jCopy[jInd].title = req.body.title;
+    //jCopy[jInd].notes = req.body.notes;
+    //jUpd = { $set: { journal: jCopy } };
+  }
+
+  else {
+    let d = new Date();
+    let n = d.toISOString();
+    jUpd = { $push: { journal: {"title": req.body.title, "notes": req.body.notes, "datestamp": n } } };
+    UsersModel.findByIdAndUpdate(req.params.id, jUpd, { new: true }, (err, updatedUser) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+      }
+      res.status(200).json(updatedUser);
+    });
+  }
+
+  // UsersModel.findByIdAndUpdate(req.params.id, jUpd, { new: true }, (err, updatedUser) => {
+  //   if (err) {
+  //     res.status(400).json({ error: err.message });
+  //   }
+  //   res.status(200).json(updatedUser);
+  // });
 });
 
 //general update Route
