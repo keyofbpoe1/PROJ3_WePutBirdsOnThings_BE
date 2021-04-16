@@ -115,6 +115,7 @@ users.put('/:id/journal', (req, res) => {
         else {
           jCopy[jInd].title = req.body.title;
           jCopy[jInd].notes = req.body.notes;
+          jCopy[jInd].photos = req.body.photos;
         }
       }
 
@@ -137,7 +138,7 @@ users.put('/:id/journal', (req, res) => {
   else {
     let d = new Date();
     let n = d.toISOString();
-    jUpd = { $push: { journal: {"title": req.body.title, "notes": req.body.notes, "datestamp": n } } };
+    jUpd = { $push: { journal: {"title": req.body.title, "notes": req.body.notes, "photos": req.body.photos, "datestamp": n } } };
     UsersModel.findByIdAndUpdate(req.params.id, jUpd, { new: true }, (err, updatedUser) => {
       if (err) {
         res.status(400).json({ error: err.message });
