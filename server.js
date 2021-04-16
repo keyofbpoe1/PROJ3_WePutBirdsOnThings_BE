@@ -7,6 +7,9 @@ const PORT = process.env.PORT;
 console.log(PORT);
 const mongoose = require('mongoose');
 
+//statics
+app.use(express.static('public'));
+
 // middleware
 app.use(express.json());
 
@@ -60,6 +63,10 @@ app.use('/Users', usersController);
 
 const sessionsController = require('./controllers/sessionsController');
 app.use('/Sessions', sessionsController);
+
+
+const imagesController = require('./controllers/imagesController');
+app.use('/upload', imagesController);
 
 //listener
 app.listen(PORT, () => {
