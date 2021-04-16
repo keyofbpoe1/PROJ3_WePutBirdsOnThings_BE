@@ -1,11 +1,23 @@
-require('dotenv').config();
-const express = require('express');
-const app = express();
-const cors = require('cors');
-const session = require('express-session');
+
 const PORT = process.env.PORT;
 console.log(PORT);
-const mongoose = require('mongoose');
+
+
+const mongoose = require("mongoose");
+const express = require("express");
+const cors = require("cors");
+const passport = require("passport");
+const passportLocal = require("passport-local").Strategy;
+const cookieParser = require("cookie-parser");
+const bcrypt = require("bcryptjs");
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const app = express();
+const User = require("./user");
+require('dotenv').config();
+
+
+
 
 //statics
 app.use(express.static('public'));
@@ -13,12 +25,25 @@ app.use(express.static('public'));
 // middleware
 app.use(express.json());
 
-// sessions
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: "http://localhost:3000", // <-- location of the react app were connecting to
+    credentials: true,
+  })
+);
 app.use(session({
     secret: process.env.SECRET,
     resave: false, // default more info: https://www.npmjs.com/package/express-session#resave
     saveUninitialized: false, // default  more info: https://www.npmjs.com/package/express-session#resave
 }));
+app.use(cookieParser("secretcode"));
+app.use(passport.initialize());
+app.use(passport.session());
+require("./passportConfig")(passport);
+
+
 
 //database setup
 const mongoURI = process.env.MONGODBURI;
@@ -37,7 +62,7 @@ db.once('open', ()=> console.log('DB connected...'));
 db.on('error', (err)=> console.log(err.message));
 db.on('disconnected', ()=> console.log('mongoose disconnected'));
 
-//cors options
+//cors options//CORS is on top as well
 const whitelist = ['http://localhost:3000'];
 const corsOptions = {
   origin: function (origin, callback) {
@@ -49,20 +74,10 @@ const corsOptions = {
   }
 }
 
-//setup cors
-app.use(cors(corsOptions));
+const sessionsController=require('./controllers/sessionsController.js')
+app.use('/', sessionsController)
 
-// HOMEPAGE message
-app.get('/', (req, res) => {
-  res.send('Connected');
-});
 
-//controllers
-const usersController = require('./controllers/usersController');
-app.use('/Users', usersController);
-
-const sessionsController = require('./controllers/sessionsController');
-app.use('/Sessions', sessionsController);
 
 
 const imagesController = require('./controllers/imagesController');
