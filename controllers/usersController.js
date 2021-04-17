@@ -92,7 +92,7 @@ users.put('/:id/journal', (req, res) => {
   let jUpd = {};
 
   //if updating OR deleting journal item
-  if (req.body.datestamp) {
+  if (req.body.type === 'update' || req.body.type === 'delete') {
     //find journal entry in user
     let jCopy;
     let jInd;
@@ -108,7 +108,7 @@ users.put('/:id/journal', (req, res) => {
       //if item found
       if (jInd >= 0) {
         //if deleting
-        if (req.body.delete) {
+        if (req.body.type === 'delete') {
           jCopy.splice(jInd, 1);
         }
         //else update item
@@ -136,14 +136,14 @@ users.put('/:id/journal', (req, res) => {
 
   //if adding new item
   else {
-    let d = new Date();
-    let n = d.toISOString();
-    jUpd = { $push: { journal: {"title": req.body.title, "notes": req.body.notes, "photos": req.body.photos, "datestamp": n } } };
+    // let d = new Date();
+    // let n = d.toISOString();
+    jUpd = { $push: { journal: {"title": req.body.title, "notes": req.body.notes, "photos": req.body.photos, "datestamp": req.body.datestamp } } };
     UsersModel.findByIdAndUpdate(req.params.id, jUpd, { new: true }, (err, updatedUser) => {
       if (err) {
         res.status(400).json({ error: err.message });
       }
-      res.status(200).json(updatedUser);
+      res.status(200).json({updatedUserDDD: updatedUser});
     });
   }
 
