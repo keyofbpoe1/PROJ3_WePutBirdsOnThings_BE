@@ -88,11 +88,14 @@ sessions.post('/', (req, res) => {
 // });
 
 //logout DELETE/destroy Route
-sessions.delete('/', (req, res) => {
+sessions.get('/logout', (req, res) => {
+  console.log(req.body);
   req.logout();
   return res
-    .status(404)
+    .status(200)
     .json('Logged out!');
+
+
   // req.session.destroy(() => {
   //   res.redirect('/');
   // });
