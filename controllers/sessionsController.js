@@ -9,6 +9,7 @@ const UsersModel = require('../models/usersModel');
 
 //login POST Route
 sessions.post('/', (req, res) => {
+  console.log(req.body);
   UsersModel.findOne({ username: req.body.username}, (err, foundUser) => {
     if (err) {
       res.send(err);

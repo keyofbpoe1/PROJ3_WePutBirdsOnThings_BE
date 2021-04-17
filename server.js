@@ -1,3 +1,4 @@
+require('dotenv').config();
 
 const PORT = process.env.PORT;
 console.log(PORT);
@@ -13,7 +14,7 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const app = express();
-const User = require("./user");
+//const User = require("../models/usersModel");
 require('dotenv').config();
 
 
@@ -41,7 +42,7 @@ app.use(session({
 app.use(cookieParser("secretcode"));
 app.use(passport.initialize());
 app.use(passport.session());
-require("./passportConfig")(passport);
+require("./controllers/passportController")(passport);
 
 
 
@@ -75,10 +76,10 @@ const corsOptions = {
 }
 
 const sessionsController=require('./controllers/sessionsController.js')
-app.use('/', sessionsController)
+app.use('/login', sessionsController)
 
-
-
+const usersController = require('./controllers/usersController');
+app.use('/upload', usersController);
 
 const imagesController = require('./controllers/imagesController');
 app.use('/upload', imagesController);
