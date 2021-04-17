@@ -3,6 +3,8 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const session = require('express-session');
+const bodyParser = require("body-parser");
+const passport = require("passport");
 const PORT = process.env.PORT;
 console.log(PORT);
 const mongoose = require('mongoose');
@@ -11,6 +13,12 @@ const mongoose = require('mongoose');
 app.use(express.static('public'));
 
 // middleware
+app.use(
+  bodyParser.urlencoded({
+    extended: false
+  })
+);
+
 app.use(express.json());
 
 // sessions
@@ -50,12 +58,17 @@ const corsOptions = {
 }
 
 //setup cors
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
 
 // HOMEPAGE message
 app.get('/', (req, res) => {
   res.send('Connected');
 });
+
+// Passport middleware
+app.use(passport.initialize());
+// Passport config
+require("./config/passport")(passport);
 
 //controllers
 const usersController = require('./controllers/usersController');
@@ -63,7 +76,6 @@ app.use('/Users', usersController);
 
 const sessionsController = require('./controllers/sessionsController');
 app.use('/Sessions', sessionsController);
-
 
 const imagesController = require('./controllers/imagesController');
 app.use('/upload', imagesController);
