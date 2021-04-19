@@ -56,35 +56,71 @@ users.put('/:id/pin', (req, res) => {
   });
 });
 
-//update bird ROUTE (mark bird as seen)
-users.put('/:id/birdseen', (req, res) => {
+//update bird ROUTE (unpin bird)
+users.put('/:id/unpin', (req, res) => {
   console.log(req.body);
 
-  //find user
+  //get user bird list
   UsersModel.findById(req.params.id, (err, foundUser, next) => {
     if (err) {
       res.status(400).json({ error: err.message });
     }
+      console.log('unpinning bird');
 
-    //save bird seen to copy of birdlist
-    let bCopy = foundUser.birdlist;
-    let bInd = bCopy.findIndex(obj => {
-      return obj.birdname === req.body.birdname;
-    });
-    if (bInd >= 0) {
-      bCopy[bInd].seen = true;
-      bCopy[bInd].jent = req.body.jent;
-    }
+      bListCopy = foundUser.birdlist;
+      bInd = bListCopy.findIndex(obj => {
+        return (obj.jent === req.body.jent && obj.birdname.subId === req.body.birdname.subId);
+      });
+      // console.log(bInd);
+      // console.log(bListCopy[bInd]);
+      // console.log(req.body.birdname.subId);
 
-    //update birdlist in user to copy
-    let bUpd = { $set: { birdlist: bCopy } };
-    UsersModel.findByIdAndUpdate(req.params.id, bUpd, { new: true }, (err, updatedUser) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
+      //if item found
+      if (bInd >= 0) {
+        //remove from array
+        bListCopy.splice(bInd, 1);
       }
-      res.status(200).json(updatedUser);
-    });
+
+      let bUpd = { $set: { birdlist: bListCopy } };
+      UsersModel.findByIdAndUpdate(req.params.id, bUpd, { new: true }, (err, updatedUser) => {
+        if (err) {
+          res.status(400).json({ error: err.message });
+        }
+        res.status(200).json(updatedUser);
+      });
+
   });
+
+
+
+
+  // console.log(req.body);
+  //
+  // //find user
+  // UsersModel.findById(req.params.id, (err, foundUser, next) => {
+  //   if (err) {
+  //     res.status(400).json({ error: err.message });
+  //   }
+  //
+  //   //save bird seen to copy of birdlist
+  //   let bCopy = foundUser.birdlist;
+  //   let bInd = bCopy.findIndex(obj => {
+  //     return obj.birdname === req.body.birdname;
+  //   });
+  //   if (bInd >= 0) {
+  //     bCopy[bInd].seen = true;
+  //     bCopy[bInd].jent = req.body.jent;
+  //   }
+  //
+  //   //update birdlist in user to copy
+  //   let bUpd = { $set: { birdlist: bCopy } };
+  //   UsersModel.findByIdAndUpdate(req.params.id, bUpd, { new: true }, (err, updatedUser) => {
+  //     if (err) {
+  //       res.status(400).json({ error: err.message });
+  //     }
+  //     res.status(200).json(updatedUser);
+  //   });
+  // });
 });
 
 //journal put/update/delete route
