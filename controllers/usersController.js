@@ -35,24 +35,24 @@ users.put('/:id/pin', (req, res) => {
     //res.status(200).json(foundUser.birdlist.find(bird => { bird.birdname === req.body.birdname }));
     //res.status(200).
     //check if user has already pinned bird
-    let resBird =  (foundUser.birdlist.find(obj => {
-      return obj.birdname === req.body.birdname;
-    }));
-    if (!resBird) {
+    // let resBird =  (foundUser.birdlist.find(obj => {
+    //   return obj.birdname === req.body.birdname;
+    // }));
+    // if (!resBird) {
       //if not duplicate, pin it!
       console.log('pinning bird');
-      let pinUpd = { $push: { birdlist: {"birdname": req.body.birdname, "seen": false } } };
+      let pinUpd = { $push: { birdlist: {"birdname": req.body.birdname, "seen": req.body.seen, "jent": req.body.jent } } };
       UsersModel.findByIdAndUpdate(req.params.id, pinUpd, { new: true }, (err, updatedUser) => {
         if (err) {
           res.status(400).json({ error: err.message });
         }
         res.status(200).json(updatedUser);
       });
-    }
-    else {
-      //if dulicate, error
-      res.status(400).json({ error: "duplicate bird" });
-    }
+    // }
+    // else {
+    //   //if dulicate, error
+    //   res.status(400).json({ error: "duplicate bird" });
+    // }
   });
 });
 
@@ -73,6 +73,7 @@ users.put('/:id/birdseen', (req, res) => {
     });
     if (bInd >= 0) {
       bCopy[bInd].seen = true;
+      bCopy[bInd].jent = req.body.jent;
     }
 
     //update birdlist in user to copy
