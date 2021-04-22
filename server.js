@@ -46,7 +46,7 @@ db.on('error', (err)=> console.log(err.message));
 db.on('disconnected', ()=> console.log('mongoose disconnected'));
 
 //cors options
-const whitelist = ['http://localhost:3000'];
+const whitelist = [process.env.CORSURL];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
